@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .serializers import AppointmentSerializer
 from .models import Appointment
 # Create your views here.
+from rest_framework.views import APIView
 from rest_framework import viewsets
 class AppointmentViewSets(viewsets.ModelViewSet):
     queryset=Appointment.objects.all()
@@ -15,3 +16,5 @@ class AppointmentViewSets(viewsets.ModelViewSet):
         if patient_id:
             queryset=queryset.filter(patient_id=patient_id)
         return queryset
+    
+
