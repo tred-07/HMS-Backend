@@ -10,7 +10,7 @@ class Appointment(models.Model):
     APPOINTMENT_TYPE=models.CharField(choices=APPOINTMENT_TYPE,max_length=40)
     APPOINTMENT_STATUS=models.CharField(choices=APPOINTMENT_STATUS,max_length=40)
     symtom=models.TextField()
-    time=models.OneToOneField(AvailableTime,on_delete=models.CASCADE)
+    time=models.ForeignKey(AvailableTime,on_delete=models.CASCADE,null=True)
     cancel=models.BooleanField(default=False)
     def __str__(self):
         return f"Doctor: {self.doctor.user},Patient : {self.patient.user.first_name}, Time: {self.time}"
