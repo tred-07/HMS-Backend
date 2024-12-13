@@ -5,7 +5,7 @@ from .models import Patient
 from .serializers import PatientSerializer,RegistrationSerializer,UserLoginSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.contrib.auth import tokens,authenticate
+from django.contrib.auth import tokens,authenticate,login,logout
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.views import generic
@@ -51,20 +51,22 @@ class Activate(generic.View):
         if user is not None and tokens.default_token_generator.check_token(user,token):
             user.is_active=True
             user.save()
-            return redirect('register')
+            return redirect('login')
 
         return HttpResponse("You are not authenticated user.")
 
 
 class UserLoginView(APIView):
-    def post(self):
-        serializer=UserLoginSerializer(data=self.request.date)
+    def post(self,request):
+        serializer=UserLoginSerializer(data=self.request.data)
         if serializer.is_valid():
             username=serializer.validated_data['username']
             password=serializer.validated_data['password']
-            user=authenticate(username,password)
+
+            user=authenticate(username=username,password=password)
             if user:
-                token=Token.objects.get_or_create(user=username)
-                return Response({'token':token,'user_id':user.id})
+                token,_=Token.objects.get_or_create(user=user)
+                login(request,user)
+                return Response({'token':token.key,'user_id':user.id})
             return HttpResponse("Invalid User")
         return HttpResponse("Invalid User")
