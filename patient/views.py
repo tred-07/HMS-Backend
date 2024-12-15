@@ -13,6 +13,9 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string 
+
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
@@ -70,3 +73,10 @@ class UserLoginView(APIView):
                 return Response({'token':token.key,'user_id':user.id})
             return HttpResponse("Invalid User")
         return HttpResponse("Invalid User")
+    
+
+class UserLogOutView(APIView):
+    def get(self,req):
+        req.user.auth_token.delete()
+        logout(req)
+        return redirect('login')
