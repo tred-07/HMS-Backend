@@ -20,6 +20,8 @@ class DesignationViewSets(viewsets.ModelViewSet):
 class DoctorViewSets(viewsets.ModelViewSet):
     queryset=Doctor.objects.all()
     serializer_class=serializers.DoctorSerializer
+    pagination_class=DoctorPagination
+    filter_backends=[filters.SearchFilter]
 
 class ReviewViewSets(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
